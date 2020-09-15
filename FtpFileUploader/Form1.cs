@@ -14,6 +14,7 @@ namespace FtpFileUploader
 {
     public partial class Form1 : Form
     {
+        string filePathToUpload = "";
         public Form1()
         {
             InitializeComponent();
@@ -66,7 +67,7 @@ namespace FtpFileUploader
             {
                 textBox2.Text = openFileDialog1.FileName;
                 
-                string name = FileNameFixer(System.IO.Path.GetFileName(openFileDialog1.FileName));
+                string name = FileNameFixer(System.IO.Path.GetFileNameWithoutExtension(openFileDialog1.FileName));
                 string uzanti = System.IO.Path.GetExtension(openFileDialog1.FileName);             
                 string message = "Dosya Adı: " + name + uzanti + " olarak gönderilecektir.";
                 const string caption = "Dosya adı onayı ";
@@ -98,13 +99,45 @@ namespace FtpFileUploader
         {
             progressBar1.Value = 0;
 
+            filePathToUpload = Path.GetDirectoryName(openFileDialog1.FileName) + "\\" + textBox3.Text;
+            File.Move(textBox2.Text, filePathToUpload);
+            
             MessageBox.Show(textBox1.Text+"/"+textBox3.Text, "Dosyanın linki",
                                              MessageBoxButtons.OK,
                                              MessageBoxIcon.Information);
+            progressBar1.Value = 10;
 
             linkLabel1.Text = textBox1.Text + "/" + textBox3.Text;
             linkLabel1.Visible = true;
+
+            progressBar1.Value = 20;
+
+
+            string FTPDosyaYolu = "ftpurl";//change your ftp url information as yours
+            FtpWebRequest request = (FtpWebRequest)FtpWebRequest.Create(FTPDosyaYolu);
+            progressBar1.Value = 30;
+            string username = "username"; //change username information as yours
+            string password = "password"; //change pasword information as yours
             
+            request.Credentials = new NetworkCredential(username, password);
+
+            request.UsePassive = true; // pasif olarak kullanabilme
+            request.UseBinary = true; // aktarım binary ile olacak
+            request.KeepAlive = false; // sürekli açık tutma
+
+            request.Method = WebRequestMethods.Ftp.UploadFile; // Dosya yüklemek için bu request metodu gerekiyor
+            progressBar1.Value = 40;
+
+            Console.WriteLine(filePathToUpload);
+            FileStream stream = File.OpenRead(filePathToUpload);
+            byte[] buffer = new byte[stream.Length];
+            stream.Read(buffer, 0, buffer.Length);
+            stream.Close();
+
+            Stream reqStream = request.GetRequestStream(); // yükleme işini yapan kodlar
+            reqStream.Write(buffer, 0, buffer.Length);
+            reqStream.Close();
+
             progressBar1.Value = 100;
 
 
