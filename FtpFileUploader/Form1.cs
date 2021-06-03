@@ -102,9 +102,7 @@ namespace FtpFileUploader
             filePathToUpload = Path.GetDirectoryName(openFileDialog1.FileName) + "\\" + textBox3.Text;
             File.Move(textBox2.Text, filePathToUpload);
             
-            MessageBox.Show(textBox1.Text+"/"+textBox3.Text, "Dosyanın linki",
-                                             MessageBoxButtons.OK,
-                                             MessageBoxIcon.Information);
+            
             progressBar1.Value = 10;
 
             linkLabel1.Text = textBox1.Text + "/" + textBox3.Text;
@@ -113,11 +111,11 @@ namespace FtpFileUploader
             progressBar1.Value = 20;
 
 
-            string FTPDosyaYolu = "ftpurl";//change your ftp url information as yours
+            string FTPDosyaYolu = "ftp://88.255.87.108:21/www.btso.org.tr/linkfiles/"+textBox3.Text;//change your ftp url information as yours
             FtpWebRequest request = (FtpWebRequest)FtpWebRequest.Create(FTPDosyaYolu);
             progressBar1.Value = 30;
-            string username = "username"; //change username information as yours
-            string password = "password"; //change pasword information as yours
+            string username = "btso_org_tr"; //change username information as yours
+            string password = "Bts@2020.f0Y_M"; //change pasword information as yours
             
             request.Credentials = new NetworkCredential(username, password);
 
@@ -138,6 +136,12 @@ namespace FtpFileUploader
             reqStream.Write(buffer, 0, buffer.Length);
             reqStream.Close();
 
+            Clipboard.SetText(linkLabel1.Text); // link yolu kopyalanıyor
+
+            MessageBox.Show("Link panoya koplandı. \n " +textBox1.Text + "/" + textBox3.Text, "Dosyanın linki",
+                                             MessageBoxButtons.OK,
+                                             MessageBoxIcon.Information);
+
             progressBar1.Value = 100;
 
 
@@ -146,6 +150,29 @@ namespace FtpFileUploader
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start(textBox1.Text + "/" + textBox3.Text);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.InitialDirectory = "ftp://www.btso.org.tr/linkfiles";
+
+            DialogResult result = dialog.ShowDialog(this);
+
+            if (result != DialogResult.OK)
+            {
+                //return false;
+            }
+
+            if (result == DialogResult.OK)
+            {
+                textBox1.Text = dialog.FileName;
+    
+
+            }        
+
+
+
         }
     }
 }

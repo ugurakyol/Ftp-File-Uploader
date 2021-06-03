@@ -55,6 +55,9 @@
     <ApplicationIcon>functions.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FtpFileDialog, Version=1.0.7517.23342, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FtpFileDialog.1.1.7517.23342\lib\net40\FtpFileDialog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -88,6 +91,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -115,6 +119,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="functions.ico" />
+    <Content Include="Resources\Document_16x.png" />
+    <Content Include="Resources\FolderClosed_16x.png" />
+    <Content Include="Resources\FolderOpened_16x.png" />
+    <Content Include="Resources\OpenFolder_16x.png" />
+    <Content Include="Resources\ParentFolder_16x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
