@@ -111,11 +111,11 @@ namespace FtpFileUploader
             progressBar1.Value = 20;
 
 
-            string FTPDosyaYolu = "ftp://88.255.87.108:21/www.btso.org.tr/linkfiles/"+textBox3.Text;//change your ftp url information as yours
+            string FTPDosyaYolu = "ftp:// /linkfiles/"+textBox3.Text;//change your ftp url information as yours
             FtpWebRequest request = (FtpWebRequest)FtpWebRequest.Create(FTPDosyaYolu);
             progressBar1.Value = 30;
-            string username = ""; //change username information as yours
-            string password = ""; //change pasword information as yours
+            string username = " "; //change username information as yours
+            string password = " "; //change pasword information as yours
             
             request.Credentials = new NetworkCredential(username, password);
 
