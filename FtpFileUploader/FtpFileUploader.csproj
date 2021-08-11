@@ -55,6 +55,9 @@
     <ApplicationIcon>functions.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aspose.Imaging, Version=21.8.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aspose.Imaging.21.8.0\lib\net40\Aspose.Imaging.dll</HintPath>
+    </Reference>
     <Reference Include="FtpFileDialog, Version=1.0.7517.23342, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FtpFileDialog.1.1.7517.23342\lib\net40\FtpFileDialog.dll</HintPath>
     </Reference>

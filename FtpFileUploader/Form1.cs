@@ -19,6 +19,7 @@ namespace FtpFileUploader
         {
             InitializeComponent();
             textBox1.Text = "http://www.btso.org.tr/linkfiles";
+            textBox5.Text = "http://www.btso.org.tr/documents/othernotice";
             textBox2.Text = "Gönderilecek dosya yolunu seçiniz.";
         }
         private string FileNameFixer(string name)
@@ -49,6 +50,25 @@ namespace FtpFileUploader
             }
             progressBar1.Value = 40;
             return fixedName;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.InitialDirectory = "ftp://www.btso.org.tr/linkfiles";
+
+            DialogResult result = dialog.ShowDialog(this);
+
+            if (result != DialogResult.OK)
+            {
+                //return false;
+            }
+
+            if (result == DialogResult.OK)
+            {
+                textBox1.Text = dialog.FileName;
+            }
+
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -111,11 +131,11 @@ namespace FtpFileUploader
             progressBar1.Value = 20;
 
 
-            string FTPDosyaYolu = "ftp:// /linkfiles/"+textBox3.Text;//change your ftp url information as yours
+            string FTPDosyaYolu = "ftp://88.255.87.108:21/www.btso.org.tr/linkfiles/"+textBox3.Text;//change your ftp url information as yours
             FtpWebRequest request = (FtpWebRequest)FtpWebRequest.Create(FTPDosyaYolu);
             progressBar1.Value = 30;
-            string username = " "; //change username information as yours
-            string password = " "; //change pasword information as yours
+            string username = "btso_org_tr"; //change username information as yours
+            string password = "Bts@2020.f0Y_M"; //change pasword information as yours
             
             request.Credentials = new NetworkCredential(username, password);
 
@@ -152,27 +172,152 @@ namespace FtpFileUploader
             System.Diagnostics.Process.Start(textBox1.Text + "/" + textBox3.Text);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+
+
+        private void label4_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.InitialDirectory = "ftp://www.btso.org.tr/linkfiles";
-
-            DialogResult result = dialog.ShowDialog(this);
-
-            if (result != DialogResult.OK)
+            if(label4.Text == "link oluşturma için tıklayınız.")
             {
-                //return false;
+                panel1.Visible = true;
+                panel2.Visible = false;
+                label4.Text = "TIFF yükleme için tıklayınız.";
+            }
+            else
+            {
+                panel1.Visible = false;
+                panel2.Visible = true;
+                label4.Text = "link oluşturma için tıklayınız.";
+            }
+            
+        }
+
+        private void TIFFConvert(string path)
+        {
+            string fileName = System.IO.Path.GetDirectoryName(path) +@"\"+ System.IO.Path.GetFileNameWithoutExtension(path) + ".pdf";            
+            // load the TIFF file in an instance of Image
+            using (var image = Aspose.Imaging.Image.Load(path))
+            {
+                // create an instance of PdfOptions
+                var options = new Aspose.Imaging.ImageOptions.PdfOptions();
+                // save TIFF as a PDF
+                image.Save(fileName, options);
+            }
+            listBox2.Items.Add((listBox1.Items.Count + 1) + " " + System.IO.Path.GetFileNameWithoutExtension(path) + ".pdf");
+            label8.Text = "Yüklenen Dosyaların Listesi - (" + listBox2.Items.Count + ")";
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            progressBar2.Value = 20;
+
+            openFileDialog1.InitialDirectory = @"C:\";
+            openFileDialog1.RestoreDirectory = true;
+            openFileDialog1.Title = "Dosya Seçin";
+            openFileDialog1.Filter = "All files (*.*)|*.*";
+            openFileDialog1.CheckFileExists = true;
+            openFileDialog1.CheckPathExists = true;
+            DialogResult dr = this.openFileDialog1.ShowDialog();
+
+            if (dr == System.Windows.Forms.DialogResult.OK)
+            {
+                textBox4.Text = System.IO.Path.GetDirectoryName(openFileDialog1.FileName);
+
+                ProcessDirectory(textBox4.Text);  
             }
 
-            if (result == DialogResult.OK)
+            progressBar2.Value = 100;
+        }
+
+
+        // Process all files in the directory passed in, recurse on any directories
+        // that are found, and process the files they contain.
+        public void ProcessDirectory(string targetDirectory)
+        {
+            // Process the list of files found in the directory.
+            string[] fileEntries = Directory.GetFiles(targetDirectory);
+            foreach (string fileName in fileEntries)
+                ProcessFile(fileName);
+
+            // Recurse into subdirectories of this directory.
+            string[] subdirectoryEntries = Directory.GetDirectories(targetDirectory);
+            foreach (string subdirectory in subdirectoryEntries)
+                ProcessDirectory(subdirectory);
+
+            button6.Visible = true;
+        }
+
+        // Insert logic for processing found files here.
+        public void ProcessFile(string path)
+        {
+            // Console.WriteLine("Processed file '{0}'.", path);
+            if(System.IO.Path.GetExtension(path) == ".tiff" )
             {
-                textBox1.Text = dialog.FileName;
-    
+                TIFFConvert(path);
+                listBox1.Items.Add((listBox1.Items.Count + 1) + " " + System.IO.Path.GetFileName(path) + ".");
+                label7.Text = "Yüklenecek Dosyaların Listesi - (" + listBox1.Items.Count + ")";
 
-            }        
+            }else if(System.IO.Path.GetExtension(path) == ".TIFF")
+            {
+                TIFFConvert(path);
+                listBox1.Items.Add((listBox1.Items.Count + 1) + " " + System.IO.Path.GetFileName(path) + ".");
+                label7.Text = "Yüklenecek Dosyaların Listesi - (" + listBox1.Items.Count + ")";
+
+            }
+            else if (System.IO.Path.GetExtension(path) == ".TIF")
+            {
+                TIFFConvert(path);
+                listBox1.Items.Add((listBox1.Items.Count + 1) + " " + System.IO.Path.GetFileName(path) + ".");
+                label7.Text = "Yüklenecek Dosyaların Listesi - (" + listBox1.Items.Count + ")";
+
+            }
 
 
 
+        }
+
+        public void UploadFiles(string targetDirectory)
+        {
+            // Process the list of files found in the directory.
+            string[] fileEntries = Directory.GetFiles(targetDirectory);
+            foreach (string fileName in fileEntries)
+                if (System.IO.Path.GetExtension(fileName) == ".pdf")
+                {
+                    filePathToUpload = System.IO.Path.GetFullPath(fileName);
+                    string FTPDosyaYolu = "ftp://88.255.87.108:21/www.btso.org.tr/documents/othernotice/" + System.IO.Path.GetFileName(fileName); //change your ftp url information as yours
+                    FtpWebRequest request = (FtpWebRequest)FtpWebRequest.Create(FTPDosyaYolu);
+                    progressBar2.Value = 25;
+                    string username = "btso_org_tr"; //change username information as yours
+                    string password = "Bts@2020.f0Y_M"; //change pasword information as yours
+
+                    request.Credentials = new NetworkCredential(username, password);
+
+                    request.UsePassive = true; // pasif olarak kullanabilme
+                    request.UseBinary = true; // aktarım binary ile olacak
+                    request.KeepAlive = false; // sürekli açık tutma
+
+                    request.Method = WebRequestMethods.Ftp.UploadFile; // Dosya yüklemek için bu request metodu gerekiyor
+                    progressBar2.Value = 50;
+
+                    Console.WriteLine(filePathToUpload);
+                    FileStream stream = File.OpenRead(filePathToUpload);
+                    byte[] buffer = new byte[stream.Length];
+                    stream.Read(buffer, 0, buffer.Length);
+                    stream.Close();
+                    progressBar2.Value = 75;
+                    Stream reqStream = request.GetRequestStream(); // yükleme işini yapan kodlar
+                    reqStream.Write(buffer, 0, buffer.Length);
+                    reqStream.Close();
+                    progressBar2.Value = 100;
+                    
+                }
+            MessageBox.Show("Dosya gönderimi tamamlanmıştır.", "Dosya Transfer",
+                                             MessageBoxButtons.OK,
+                                             MessageBoxIcon.Information);
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            UploadFiles(textBox4.Text);
         }
     }
 }
