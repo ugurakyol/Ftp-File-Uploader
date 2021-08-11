@@ -283,11 +283,11 @@ namespace FtpFileUploader
                 if (System.IO.Path.GetExtension(fileName) == ".pdf")
                 {
                     filePathToUpload = System.IO.Path.GetFullPath(fileName);
-                    string FTPDosyaYolu = "ftp://88.255.87.108:21/www.btso.org.tr/documents/othernotice/" + System.IO.Path.GetFileName(fileName); //change your ftp url information as yours
+                    string FTPDosyaYolu = "ftp:// /" + System.IO.Path.GetFileName(fileName); //change your ftp url information as yours
                     FtpWebRequest request = (FtpWebRequest)FtpWebRequest.Create(FTPDosyaYolu);
                     progressBar2.Value = 25;
-                    string username = "btso_org_tr"; //change username information as yours
-                    string password = "Bts@2020.f0Y_M"; //change pasword information as yours
+                    string username = " "; //change username information as yours
+                    string password = " "; //change pasword information as yours
 
                     request.Credentials = new NetworkCredential(username, password);
 
